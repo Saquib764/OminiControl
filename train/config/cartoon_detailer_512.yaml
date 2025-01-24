@@ -26,8 +26,6 @@ train:
     drop_text_prob: 0.1
     drop_image_prob: 0.0
 
-  wandb:
-    project: "OminiControl"
 
   lora_config:
     r: 16
