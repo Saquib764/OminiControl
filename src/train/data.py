@@ -337,11 +337,12 @@ class CartoonDetailerDataset(Dataset):
 
 
     def __len__(self):
-        return 2 * len(self.base_dataset)
+        return len(self.base_dataset)
 
     def __getitem__(self, _idx):
-        idx = _idx // 2
-        is_same_pose = _idx % 2 == 1
+        idx = _idx
+        # is_same_pose = _idx % 2 == 1
+        is_same_pose = True
         data = self.base_dataset[idx]
         condition_img = data['condition']
         target_image = data['target']
@@ -363,19 +364,19 @@ class CartoonDetailerDataset(Dataset):
         ).convert("RGB")
 
         # Process datum to create description
-        description = f"A {tag} like cartoon character in a white background. Instruction: different pose."
+        description = f"A {tag} like cartoon character in a white background."
 
         if is_same_pose:
-            description = f"A {tag} like cartoon character in a white background. Instruction: same pose."
+            description = f"A {tag} like cartoon character in a white background."
 
         # Randomly drop text or image
         drop_text = random.random() < self.drop_text_prob
         drop_image = random.random() < self.drop_image_prob
         if drop_text:
-            description = f"Instruction: different pose."
+            description = f""
 
             if is_same_pose:
-                description = f"Instruction: same pose."
+                description = f""
         # if drop_image:
         #     condition_img = Image.new(
         #         "RGB", (self.condition_size, self.condition_size), (0, 0, 0)
