@@ -10,7 +10,8 @@ from datasets import load_dataset
 from .data import (
     ImageConditionDataset,
     Subject200KDataset,
-    CartoonDataset
+    CartoonDataset,
+    CartoonDetailerDataset,
 )
 from .model import OminiModel
 from .callbacks import TrainingCallback
@@ -114,6 +115,18 @@ def main():
     elif training_config["dataset"]["type"] == "cartoon":
         dataset = load_dataset("saquiboye/oye-cartoon", split="train")
         dataset = CartoonDataset(
+            dataset,
+            condition_size=training_config["dataset"]["condition_size"],
+            target_size=training_config["dataset"]["target_size"],
+            image_size=training_config["dataset"]["image_size"],
+            padding=training_config["dataset"]["padding"],
+            condition_type=training_config["condition_type"],
+            drop_text_prob=training_config["dataset"]["drop_text_prob"],
+            drop_image_prob=training_config["dataset"]["drop_image_prob"],
+        )
+    elif training_config["dataset"]["type"] == "cartoon_detailer":
+        dataset = load_dataset("saquiboye/cartoon-detailer-v2", split="train")
+        dataset = CartoonDetailerDataset(
             dataset,
             condition_size=training_config["dataset"]["condition_size"],
             target_size=training_config["dataset"]["target_size"],

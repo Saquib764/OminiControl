@@ -308,3 +308,82 @@ class CartoonDataset(Dataset):
             # 16 is the downscale factor of the image
             "position_delta": np.array([0, -16]),
         }
+
+
+class CartoonDetailerDataset(Dataset):
+    def __init__(
+        self,
+        base_dataset,
+        condition_size: int = 1024,
+        target_size: int = 1024,
+        image_size: int = 1024,
+        padding: int = 0,
+        condition_type: str = "cartoon-detailer",
+        drop_text_prob: float = 0.1,
+        drop_image_prob: float = 0.1,
+        return_pil_image: bool = False,
+    ):
+        self.base_dataset = base_dataset
+        self.condition_size = condition_size
+        self.target_size = target_size
+        self.image_size = image_size
+        self.padding = padding
+        self.condition_type = condition_type
+        self.drop_text_prob = drop_text_prob
+        self.drop_image_prob = drop_image_prob
+        self.return_pil_image = return_pil_image
+
+        self.to_tensor = T.ToTensor()
+
+
+    def __len__(self):
+        return 2 * len(self.base_dataset)
+
+    def __getitem__(self, _idx):
+        idx = _idx // 2
+        is_same_pose = _idx % 2 == 1
+        data = self.base_dataset[idx]
+        condition_img = data['condition']
+        target_image = data['target']
+
+        if is_same_pose:
+            # Blur target and set as condition, random blur strength
+            condition_img = target_image.filter(ImageFilter.GaussianBlur(random.randint(1, 10)))
+
+        # Tag
+        tag = data['tags'][0]
+
+
+        # Resize the image
+        condition_img = condition_img.resize(
+            (self.condition_size, self.condition_size)
+        ).convert("RGB")
+        target_image = target_image.resize(
+            (self.target_size, self.target_size)
+        ).convert("RGB")
+
+        # Process datum to create description
+        description = f"A cartoon character in a white background. Instruction: different pose."
+
+        if is_same_pose:
+            description = f"A cartoon character in a white background. Instruction: same pose."
+
+        # Randomly drop text or image
+        drop_text = random.random() < self.drop_text_prob
+        drop_image = random.random() < self.drop_image_prob
+        # if drop_text:
+        #     description = ""
+        # if drop_image:
+        #     condition_img = Image.new(
+        #         "RGB", (self.condition_size, self.condition_size), (0, 0, 0)
+        #     )
+
+
+        return {
+            "image": self.to_tensor(target_image),
+            "condition": self.to_tensor(condition_img),
+            "condition_type": self.condition_type,
+            "description": description,
+            # 16 is the downscale factor of the image
+            "position_delta": np.array([0, -4]),
+        }
