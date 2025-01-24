@@ -363,16 +363,19 @@ class CartoonDetailerDataset(Dataset):
         ).convert("RGB")
 
         # Process datum to create description
-        description = f"A cartoon character in a white background. Instruction: different pose."
+        description = f"A {tag} like cartoon character in a white background. Instruction: different pose."
 
         if is_same_pose:
-            description = f"A cartoon character in a white background. Instruction: same pose."
+            description = f"A {tag} like cartoon character in a white background. Instruction: same pose."
 
         # Randomly drop text or image
         drop_text = random.random() < self.drop_text_prob
         drop_image = random.random() < self.drop_image_prob
-        # if drop_text:
-        #     description = ""
+        if drop_text:
+            description = f"Instruction: different pose."
+
+            if is_same_pose:
+                description = f"Instruction: same pose."
         # if drop_image:
         #     condition_img = Image.new(
         #         "RGB", (self.condition_size, self.condition_size), (0, 0, 0)
