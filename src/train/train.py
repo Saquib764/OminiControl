@@ -24,6 +24,7 @@ def get_rank():
         rank = 0
     return rank
 
+resume_from_checkpoint = None
 
 def get_config():
     config_path = os.environ.get("XFL_CONFIG")
@@ -150,6 +151,7 @@ def main():
     # Initialize model
     trainable_model = OminiModel(
         flux_pipe_id=config["flux_path"],
+        lora_path=resume_from_checkpoint,
         lora_config=training_config["lora_config"],
         device=f"cuda",
         dtype=getattr(torch, config["dtype"]),
