@@ -19,9 +19,9 @@ train:
   condition_type: "cartoon-detailer"
   dataset:
     type: "cartoon-detailer"
-    condition_size: 768
-    target_size: 768
-    image_size: 768
+    condition_size: 640
+    target_size: 640
+    image_size: 640
     padding: 0
     drop_text_prob: 0.2
     drop_image_prob: 0.0
