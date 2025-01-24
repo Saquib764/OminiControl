@@ -202,7 +202,7 @@ class TrainingCallback(L.Callback):
                 .resize((condition_size, condition_size))
                 .convert("RGB")
             )
-            test_list.append((condition_img, [0, -4], "A cartoon character in a white background. Instruction: same pose"))
+            test_list.append((condition_img, [0, -4], "A cartoon character in a white background."))
         else:
             raise NotImplementedError
 
