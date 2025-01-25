@@ -243,12 +243,18 @@ class CartoonDataset(Dataset):
 
 
     def __len__(self):
-        return len(self.base_dataset)
+        return 2*len(self.base_dataset)
 
-    def __getitem__(self, idx):
+    def __getitem__(self, _idx):
+        idx = _idx//2
+        is_same_pose = _idx % 2 == 1
         data = self.base_dataset[idx]
         condition_img = data['condition']
         target_image = data['target']
+
+        if is_same_pose:
+            # Blur target and set as condition, random blur strength
+            condition_img = target_image.filter(ImageFilter.GaussianBlur(random.randint(2, 4)))
 
         # Tag
         tag = data['tags'][0]
@@ -287,7 +293,10 @@ class CartoonDataset(Dataset):
         ).convert("RGB")
 
         # Process datum to create description
-        description = data.get("description", f"Photo of a {description[tag]} cartoon character in a white background.")
+        description = data.get("description", f"Photo of a {description[tag]} cartoon character in a white background. Instruction: different pose.")
+
+        if is_same_pose:
+            description = f"Photo of a {description[tag]} cartoon character in a white background. Instruction: same pose."
 
         # Randomly drop text or image
         drop_text = random.random() < self.drop_text_prob
