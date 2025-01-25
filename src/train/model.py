@@ -49,7 +49,7 @@ class OminiModel(L.LightningModule):
         assert lora_path or lora_config
         if lora_path:
             # TODO: Implement this
-            self.transformer.add_adapter(lora_path)
+            self.transformer.load_adapter(lora_path)
             lora_layers = filter(
                 lambda p: p.requires_grad, self.transformer.parameters()
             )
