@@ -19,9 +19,9 @@ train:
   condition_type: "cartoon"
   dataset:
     type: "cartoon"
-    condition_size: 512
-    target_size: 512
-    image_size: 512
+    condition_size: 640
+    target_size: 640
+    image_size: 640
     padding: 0
     drop_text_prob: 0.2
     drop_image_prob: 0.0
