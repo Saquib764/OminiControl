@@ -19,9 +19,9 @@ train:
   condition_type: "cartoon"
   dataset:
     type: "cartoon"
-    condition_size: 640
-    target_size: 640
-    image_size: 640
+    condition_size: 512
+    target_size: 512
+    image_size: 512
     padding: 0
     drop_text_prob: 0.1
     drop_image_prob: 0.0
@@ -38,7 +38,7 @@ train:
   optimizer:
     type: "Prodigy"
     params:
-      lr: 0.2
+      lr: 0.8
       use_bias_correction: true
       safeguard_warmup: true
       weight_decay: 0.01
