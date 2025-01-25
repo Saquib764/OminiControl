@@ -302,7 +302,9 @@ class CartoonDataset(Dataset):
         drop_text = random.random() < self.drop_text_prob
         drop_image = random.random() < self.drop_image_prob
         if drop_text:
-            description = ""
+            description = "Instruction: different pose."
+            if is_same_pose:
+                description = "Instruction: same pose."
         if drop_image:
             condition_img = Image.new(
                 "RGB", (self.condition_size, self.condition_size), (0, 0, 0)
